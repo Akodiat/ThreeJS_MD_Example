@@ -55,6 +55,10 @@ class View {
         this.render();
     }
 
+    /**
+     * Setup instanced nucleotide objects
+     * @param {object[]} objects List of objects
+     */
     initObjects(objects) {
         // Setup common geometry and material for objects to be added
         const geometry = new THREE.IcosahedronGeometry(1, 3);
@@ -76,6 +80,7 @@ class View {
         // Create a matrix once and reuse it (for performance)
         const matrix = new THREE.Matrix4();
 
+        // Loop through objects and setup instances
         for (let i=0; i<objects.length; i++) {
             const v = objects[i];
             const position = new THREE.Vector3(v.x, v.y, v.z);
@@ -88,41 +93,8 @@ class View {
         this.render();
     }
 
-    getClickedObject(mouse) {
-        const color = new THREE.Color();
-        const highlightFactor = 4;
-        this.raycaster.setFromCamera(mouse, this.camera);
-
-        const intersection = this.raycaster.intersectObject(this.mesh);
-
-        if (this.selectedInstance !== undefined) {
-            this.mesh.getColorAt(this.selectedInstance, color);
-            color.multiplyScalar(1/highlightFactor);
-            this.mesh.setColorAt(this.selectedInstance, color);
-            this.mesh.instanceColor.needsUpdate = true;
-            this.selectedInstance = undefined;
-            this.render();
-
-        }
-
-        if (intersection.length > 0) {
-            const instanceId = intersection[0].instanceId;
-
-            // Make selected nucleotide brighter
-            this.mesh.getColorAt(instanceId, color);
-            color.multiplyScalar(highlightFactor);
-            this.mesh.setColorAt(instanceId, color);
-            this.mesh.instanceColor.needsUpdate = true;
-            this.render();
-
-            this.selectedInstance = instanceId;
-
-            return this.objects[instanceId];
-        }
-    }
-
     /**
-     * Render the scene
+     * Render the scene, should be called whenever something changes
      */
     render() {
         this.renderer.render(this.scene, this.camera);
