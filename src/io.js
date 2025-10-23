@@ -7,13 +7,13 @@
  */
 function parseCSV(csvStr, sep=",") {
     let lines = csvStr.split("\n");
-    const header = lines[0].split(sep);
-    lines = lines.slice(1);
+    const header = lines[0].split(sep).map(v=>v.trim());
+    lines = lines.slice(1).filter(l => l !== "");
     return lines.map(line => {
         const values = line.split(sep);
         const e = {};
         header.forEach((key, i) =>
-            e[key] = parseFloat(values[i])
+            e[key] = parseFloat(values[i].trim())
         );
         return e;
     });

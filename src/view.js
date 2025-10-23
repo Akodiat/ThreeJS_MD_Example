@@ -26,8 +26,8 @@ class View {
         this.ambientLight = new THREE.AmbientLight(0xFFFFFF, 1);
         this.scene.add(this.ambientLight);
 
-        this.pointLight = new THREE.PointLight(0xFFFFFF, 100);
-        this.pointLight.position.set(2, 5, 1);
+        this.pointLight = new THREE.PointLight(0xFFFFFF, 500);
+        this.pointLight.position.set(10, 10, 1);
         this.scene.add(this.pointLight);
 
         // Update canvas and renderer when window is resized
@@ -52,16 +52,18 @@ class View {
 
         const mesh = new THREE.InstancedMesh(geometry, material, objects.length);
 
+        // Scale, orientation, and colour are constant for now.
+        // (but you can set them from data if the data is available)
+        const scale = new THREE.Vector3(1, 1, 1);
+        const orientation = new THREE.Quaternion();
+        const color = new THREE.Color(0xffffff);
+
         const matrix = new THREE.Matrix4();
 
         for (let i=0; i<objects.length; i++) {
             const v = objects[i];
             const position = new THREE.Vector3(v.x, v.y, v.z);
-            const orientation = new THREE.Quaternion();
-            const scale = new THREE.Vector3(v.size, v.size, v.size);
             matrix.compose(position, orientation, scale);
-
-            const color = new THREE.Color(0xffffff);
 
             mesh.setMatrixAt(i, matrix);
             mesh.setColorAt(i, color);
