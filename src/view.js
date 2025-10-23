@@ -74,7 +74,7 @@ class View {
             matrix.compose(position, orientation, scale);
 
             mesh.setMatrixAt(i, matrix);
-            mesh.setColorAt(i, nucleotideColorMap[v['type']]);
+            mesh.setColorAt(i, nucleotideColorMap[v.type]);
         }
         this.scene.add(mesh);
         this.render();
