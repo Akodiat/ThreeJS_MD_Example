@@ -52,12 +52,17 @@ class View {
         this.render();
     }
 
-    addObjects(objects) {
+    initObjects(objects) {
         // Setup common geometry and material for objects to be added
         const geometry = new THREE.IcosahedronGeometry(1, 3);
         const material = new THREE.MeshStandardMaterial({ color: 0xffffff});
 
-        const mesh = new THREE.InstancedMesh(geometry, material, objects.length);
+        this.objects = objects;
+
+        // Remove previously visualised data (if any)
+        this.scene.remove(this.mesh);
+
+        this.mesh = new THREE.InstancedMesh(geometry, material, objects.length);
 
         // Scale and orientation are constant for now.
         // (but you can set them from data if the data is available)
@@ -73,10 +78,10 @@ class View {
             const position = new THREE.Vector3(v.x, v.y, v.z);
             matrix.compose(position, orientation, scale);
 
-            mesh.setMatrixAt(i, matrix);
-            mesh.setColorAt(i, nucleotideColorMap[v.type]);
+            this.mesh.setMatrixAt(i, matrix);
+            this.mesh.setColorAt(i, nucleotideColorMap[v.type]);
         }
-        this.scene.add(mesh);
+        this.scene.add(this.mesh);
         this.render();
     }
 

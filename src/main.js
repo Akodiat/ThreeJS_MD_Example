@@ -1,9 +1,19 @@
 import {View} from "./view.js";
 import {textFileFromPath, parseCSV} from "./io.js";
 
-const view = new View(document.getElementById("threeCanvas"));
+const view = new View(
+    document.getElementById("threeCanvas")
+);
 
 // Add objects according to data file
 textFileFromPath("./tetrahedron.csv").then(text => {
-    view.addObjects(parseCSV(text));
+    view.initObjects(parseCSV(text));
 });
+
+// Load new data when a file is uploaded by the user
+const fileInput = document.getElementById("fileInput");
+fileInput.onchange = () => {
+    fileInput.files[0].text().then(text =>
+        view.initObjects(parseCSV(text))
+    );
+};
