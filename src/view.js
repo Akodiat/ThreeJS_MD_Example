@@ -22,6 +22,9 @@ class View {
         });
         this.renderer.setSize(this.canvas.width, this.canvas.height);
 
+        // Setup raycaster (used to check for clicked objects)
+        this.raycaster = new THREE.Raycaster();
+
         // Setup scene, camera, camera controls, and lights
         this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera(75, this.canvas.width / this.canvas.height, 0.1, 1000);
@@ -83,6 +86,39 @@ class View {
         }
         this.scene.add(this.mesh);
         this.render();
+    }
+
+    getClickedObject(mouse) {
+        const color = new THREE.Color();
+        const highlightFactor = 4;
+        this.raycaster.setFromCamera(mouse, this.camera);
+
+        const intersection = this.raycaster.intersectObject(this.mesh);
+
+        if (this.selectedInstance !== undefined) {
+            this.mesh.getColorAt(this.selectedInstance, color);
+            color.multiplyScalar(1/highlightFactor);
+            this.mesh.setColorAt(this.selectedInstance, color);
+            this.mesh.instanceColor.needsUpdate = true;
+            this.selectedInstance = undefined;
+            this.render();
+
+        }
+
+        if (intersection.length > 0) {
+            const instanceId = intersection[0].instanceId;
+
+            // Make selected nucleotide brighter
+            this.mesh.getColorAt(instanceId, color);
+            color.multiplyScalar(highlightFactor);
+            this.mesh.setColorAt(instanceId, color);
+            this.mesh.instanceColor.needsUpdate = true;
+            this.render();
+
+            this.selectedInstance = instanceId;
+
+            return this.objects[instanceId];
+        }
     }
 
     /**
