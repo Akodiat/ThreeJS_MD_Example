@@ -1,0 +1,37 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Example: Three.js for MD data</title>
+
+    <!-- Make things look better by including good css defaults -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.classless.min.css">
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.176.0/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.176.0/examples/jsm/"
+        }
+      }
+    </script>
+
+  </head>
+  <body>
+    <header>
+      <h1>Example: Three.js for MD data</h1>
+    </header>
+    <main>
+      <div>
+        <canvas id="threeCanvas">
+      </div>
+    </main>
+    <footer>
+      <small>
+        Created by Dr. Joakim Bohlin, Chalmers, Infravis
+        (<a href="https://github.com/Akodiat/ThreeJS_MD_Example">source</a>).
+      </small>
+    </footer>
+
+    <script type="module" src="src/main.js"></script>
+  </body>
+</html>

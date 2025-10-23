@@ -1,0 +1,81 @@
+import * as THREE from "three";
+import {OrbitControls} from "three/addons/controls/OrbitControls.js";
+
+class View {
+    constructor(canvas) {
+        // Setup canvas and renderer
+        this.canvas = canvas;
+        this.canvas.width = this.canvas.parentElement.clientWidth;
+        this.canvas.height = 500;
+
+        this.renderer = new THREE.WebGLRenderer({
+            antialias: true,
+            canvas: this.canvas,
+            alpha: true
+        });
+        this.renderer.setSize(this.canvas.width, this.canvas.height);
+
+        // Setup scene, camera, camera controls, and lights
+        this.scene = new THREE.Scene();
+        this.camera = new THREE.PerspectiveCamera(75, this.canvas.width / this.canvas.height, 0.1, 1000);
+        this.camera.position.set(5, 2, 0);
+
+        this.controls = new OrbitControls(this.camera, this.canvas);
+        this.controls.target.set(0, 0.5, 0);
+
+        this.ambientLight = new THREE.AmbientLight(0xFFFFFF, 1);
+        this.scene.add(this.ambientLight);
+
+        this.pointLight = new THREE.PointLight(0xFFFFFF, 100);
+        this.pointLight.position.set(2, 5, 1);
+        this.scene.add(this.pointLight);
+
+        // Update canvas and renderer when window is resized
+        window.onresize = () => {
+            this.canvas.width = this.canvas.parentElement.clientWidth;
+            this.camera.aspect = this.canvas.width / this.canvas.height;
+            this.camera.updateProjectionMatrix();
+            this.renderer.setSize(this.canvas.width, this.canvas.height);
+            this.render();
+        };
+
+        // Render whenever camera is moved
+        this.controls.addEventListener("change", ()=>this.render());
+
+        this.render();
+    }
+
+    addObjects(objects) {
+        // Setup common geometry and material for objects to be added
+        const geometry = new THREE.IcosahedronGeometry(0.5, 3);
+        const material = new THREE.MeshStandardMaterial({ color: 0xffffff});
+
+        const mesh = new THREE.InstancedMesh(geometry, material, objects.length);
+
+        const matrix = new THREE.Matrix4();
+
+        for (let i=0; i<objects.length; i++) {
+            const v = objects[i];
+            const position = new THREE.Vector3(v.x, v.y, v.z);
+            const orientation = new THREE.Quaternion();
+            const scale = new THREE.Vector3(v.size, v.size, v.size);
+            matrix.compose(position, orientation, scale);
+
+            const color = new THREE.Color(0xffffff);
+
+            mesh.setMatrixAt(i, matrix);
+            mesh.setColorAt(i, color);
+        }
+        this.scene.add(mesh);
+        this.render();
+    }
+
+    /**
+     * Render the scene
+     */
+    render() {
+        this.renderer.render(this.scene, this.camera);
+    }
+}
+
+export {View}
