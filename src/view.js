@@ -25,7 +25,7 @@ class View {
         // Setup scene, camera, camera controls, and lights
         this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera(75, this.canvas.width / this.canvas.height, 0.1, 1000);
-        this.camera.position.set(5, 2, 0);
+        this.camera.position.set(15, 5, 2);
 
         this.controls = new OrbitControls(this.camera, this.canvas);
         this.controls.target.set(0, 0.5, 0);
@@ -54,14 +54,15 @@ class View {
 
     addObjects(objects) {
         // Setup common geometry and material for objects to be added
-        const geometry = new THREE.IcosahedronGeometry(0.5, 3);
+        const geometry = new THREE.IcosahedronGeometry(1, 3);
         const material = new THREE.MeshStandardMaterial({ color: 0xffffff});
 
         const mesh = new THREE.InstancedMesh(geometry, material, objects.length);
 
         // Scale and orientation are constant for now.
         // (but you can set them from data if the data is available)
-        const scale = new THREE.Vector3(1, 1, 1);
+        const radius = 0.4
+        const scale = new THREE.Vector3(radius, radius, radius);
         const orientation = new THREE.Quaternion();
 
         // Create a matrix once and reuse it (for performance)
