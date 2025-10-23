@@ -12,9 +12,13 @@ function parseCSV(csvStr, sep=",") {
     return lines.map(line => {
         const values = line.split(sep);
         const e = {};
-        header.forEach((key, i) =>
-            e[key] = parseFloat(values[i].trim())
-        );
+        header.forEach((key, i) => {
+            const val = values[i].trim()
+            e[key] = parseFloat(val);
+            if (isNaN(e[key])) {
+                e[key] = val;
+            }
+        });
         return e;
     });
 }

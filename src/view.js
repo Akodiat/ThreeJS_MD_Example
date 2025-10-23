@@ -1,6 +1,13 @@
 import * as THREE from "three";
 import {OrbitControls} from "three/addons/controls/OrbitControls.js";
 
+const nucleotideColorMap = {
+    'A': new THREE.Color(0xf59678),
+    'T': new THREE.Color(0xa8d270),
+    'G': new THREE.Color(0xfed887),
+    'C': new THREE.Color(0x7fa7da),
+}
+
 class View {
     constructor(canvas) {
         // Setup canvas and renderer
@@ -52,12 +59,12 @@ class View {
 
         const mesh = new THREE.InstancedMesh(geometry, material, objects.length);
 
-        // Scale, orientation, and colour are constant for now.
+        // Scale and orientation are constant for now.
         // (but you can set them from data if the data is available)
         const scale = new THREE.Vector3(1, 1, 1);
         const orientation = new THREE.Quaternion();
-        const color = new THREE.Color(0xffffff);
 
+        // Create a matrix once and reuse it (for performance)
         const matrix = new THREE.Matrix4();
 
         for (let i=0; i<objects.length; i++) {
@@ -66,7 +73,7 @@ class View {
             matrix.compose(position, orientation, scale);
 
             mesh.setMatrixAt(i, matrix);
-            mesh.setColorAt(i, color);
+            mesh.setColorAt(i, nucleotideColorMap[v['type']]);
         }
         this.scene.add(mesh);
         this.render();
